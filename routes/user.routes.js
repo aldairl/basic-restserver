@@ -10,6 +10,7 @@ const {
   userUpdateValidator,
   deleteUserValidator,
 } = require("../middlewares/userValidator");
+const { isAtuh, isAdmin, authWithRole } = require("../middlewares/authValidator");
 
 const router = Router();
 
@@ -19,6 +20,6 @@ router.put("/:id", userUpdateValidator, updatetUser);
 
 router.post("/", userValidator, createUser);
 
-router.delete("/:id", deleteUserValidator, deleteUser);
+router.delete("/:id", isAtuh, authWithRole("USER_ROLE", "ADMIN_ROLE"), deleteUserValidator, deleteUser);
 
 module.exports = router;

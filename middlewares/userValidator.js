@@ -1,19 +1,12 @@
-const { check, validationResult } = require("express-validator");
+const { check } = require("express-validator");
 const {
   emailValidator,
   roleValidator,
   userExist,
+  validate,
 } = require("../helpers/dbValidators");
 
-const validate = (req, res, next) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) throw errors;
-    return next();
-  } catch (error) {
-    res.status(400).json(error);
-  }
-};
+
 
 const userValidator = [
   check("name", "name is required").not().isEmpty(),
@@ -41,7 +34,6 @@ const deleteUserValidator = [
 
 module.exports = {
   userValidator,
-  validate,
   userUpdateValidator,
   deleteUserValidator,
 };
