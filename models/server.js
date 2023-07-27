@@ -9,7 +9,7 @@ class Server {
     this.userPath = "/api/user";
 
     // conect database
-    // this.conectDatabase();
+    this.conectDatabase();
     // moddlewares
     this.middlewares();
     // routes
