@@ -1,41 +1,69 @@
-const { request, response } = require("express");
+const bcrypt = require("bcryptjs");
 
-const getUser = (req=request, res = response) => {
-  const { page=1, limit } = req.query
+const { request, response } = require("express");
+const User = require("../models/user");
+
+const getUsers = async (req = request, res = response) => {
+  const { skip = 1, limit = 5 } = req.query;
+  const query = { active: true };
+
+  const [total, users] = await Promise.all([
+    User.countDocuments(query),
+    User.find(query).skip(skip).limit(limit),
+  ]);
+
   res.json({
-    msg: "GET api Controller",
-    page,
-    limit
+    total,
+    skip,
+    limit,
+    users,
   });
 };
 
-const updatetUser = (req, res = response) => {
+const updatetUser = async (req, res = response) => {
   const id = req.params.id;
 
+  const { password, google, ...userInfo } = req.body;
+
+  const user = await User.findByIdAndUpdate(id, userInfo, { new: true });
+
   res.json({
-    msg: "PUT api Controller",
-    id
+    user,
   });
 };
 
-const createUser = (req, res = response) => {
+const createUser = async (req, res = response) => {
+  const { name, email, rol, password } = req.body;
 
-  const body = req.body;
+  const user = new User({ name, email, rol, password });
+  // encript password
+  const salt = bcrypt.genSaltSync();
+  user.password = bcrypt.hashSync(password, salt);
+  // save user
+  await user.save();
+
   res.json({
-    msg: "POST api Controller",
-    body
+    user,
   });
 };
 
-const deleteUsetUser = (req, res = response) => {
+const deleteUser = async (req, res = response) => {
+  const { id } = req.params;
+
+  // delete phisically
+  // const user = await User.findByIdAndDelete(id);
+
+  // change status user
+  const user = await User.findByIdAndUpdate({ active: false });
+
   res.json({
-    msg: "DELETE api Controller",
+    user,
   });
 };
 
 module.exports = {
-  getUser,
+  getUsers,
   updatetUser,
   createUser,
-  deleteUsetUser,
+  deleteUser,
 };
