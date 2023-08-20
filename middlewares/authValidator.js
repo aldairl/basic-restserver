@@ -11,6 +11,11 @@ const loginValidator = [
   validate,
 ];
 
+const googleValidator = [
+  check("id_token", "id_token is requiered").not().isEmpty(),
+  validate,
+];
+
 const isAtuh = async (req = request, res = response, next) => {
   try {
     // Bearer token
@@ -74,4 +79,5 @@ module.exports = {
   isAtuh,
   isAdmin,
   authWithRole,
+  googleValidator,
 };
