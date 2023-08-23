@@ -69,7 +69,7 @@ const google = async (req, res) => {
   // check if user is active
   if (!user.active) {
     return res.status(401).json({
-      msg: "Account is inactive, contact service",
+      msg: "Account is inactive, contact to admin service",
     });
   }
 
