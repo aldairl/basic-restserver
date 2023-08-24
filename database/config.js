@@ -6,7 +6,7 @@ const dbConnection = async () => {
       useUnifiedTopology: true,
     });
 
-    console.log("[DB] Database succesfully conected");
+    console.log("[DB] Database conected succesfully");
   } catch (error) {
     console.log(error);
     throw new Error("Error conecting database");
