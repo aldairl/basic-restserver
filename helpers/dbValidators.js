@@ -1,6 +1,5 @@
 const { validationResult } = require("express-validator");
-const Role = require("../models/role");
-const User = require("../models/user");
+const { Category, User, Role } = require("../models");
 
 const validate = (req, res, next) => {
   try {
@@ -35,9 +34,17 @@ const userExist = async (id = "") => {
   }
 };
 
+const categoryExist = async (id = "") => {
+  const cat = await Category.findById(id);
+  if (!cat) {
+    throw new Error(`incorrect category id ${id}`);
+  }
+};
+
 module.exports = {
   roleValidator,
   emailValidator,
   userExist,
   validate,
+  categoryExist,
 };

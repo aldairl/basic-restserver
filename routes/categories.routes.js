@@ -1,25 +1,20 @@
 const { Router } = require("express");
+const { authValidator, categoryValidators } = require("../middlewares");
+const { createCategory, getCategories, updateCategory, deleteCategory, getCategory } = require("../controllers/category.controller");
+const { catId, upCategory } = require("../middlewares/categoryValidators");
 
+const { isAtuh } = authValidator;
+const { bodyCat } = categoryValidators
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.json("all categories");
-});
+router.get("/", getCategories);
 
-router.get("/:id", (req, res) => {
-  res.json("get category by id");
-});
+router.get("/:id", catId, getCategory);
 
-router.post("/", (req, res) => {
-  res.json("create category");
-});
+router.post("/", isAtuh, bodyCat, createCategory);
 
-router.put("/:id", (req, res) => {
-  res.json("update category");
-});
+router.put("/:id", isAtuh, upCategory, catId, updateCategory);
 
-router.delete("/:id", (req, res) => {
-  res.json("delete category");
-});
+router.delete("/:id", isAtuh, catId, deleteCategory);
 
 module.exports = router;
