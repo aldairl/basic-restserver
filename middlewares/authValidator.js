@@ -16,7 +16,7 @@ const googleValidator = [
   validate
 ]
 
-/** Check id user is authenticated */
+/** Check id user is authenticated and set user in req */
 const isAtuh = async (req = request, res = response, next) => {
   try {
     // Bearer token
