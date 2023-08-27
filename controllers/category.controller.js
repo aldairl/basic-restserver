@@ -7,7 +7,7 @@ const getCategories = async (req, res = response) => {
 
   // make two querys to get total and docs
   const [total, categories] = await Promise.all([
-    Category.countDocuments(),
+    Category.countDocuments(queryDocs),
     Category.find(queryDocs).populate('user', 'name').skip(skip).limit(limit)
   ])
 
@@ -40,7 +40,8 @@ const createCategory = async (req, res = response) => {
 
   const newCategory = new Category(data)
   await newCategory.save()
-  res.status(201).json(name)
+
+  res.status(201).json(`category ${newCategory.name} created succesfully`)
 }
 
 const updateCategory = async (req, res = response) => {

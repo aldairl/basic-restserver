@@ -2,28 +2,48 @@ const { response } = require('express')
 const { Product } = require('../models')
 
 const getProducts = async (req, res = response) => {
-  const products = await Product.find()
-  res.json(products)
+  const { skip = 0, limit = 10 } = req.query
+  const query = { isActive: true }
+
+  const [total, products] = await Promise.all([
+    await Product.countDocuments(query),
+    await Product.find(query)
+      .populate('category', 'name')
+      .populate('user', 'name')
+      .skip(skip)
+      .limit(limit)
+  ])
+
+  res.json({ products, total, skip, limit })
 }
 
 const getProduct = async (req, res = response) => {
   const { id } = req.params
   const product = await Product.findById(id)
+    .populate('category', 'name')
+    .populate('user', 'name')
   res.json(product)
 }
 
 const createProduct = async (req, res = response) => {
-  const { name, category, price, description } = req.body
+  const { isActive, user, name, ...prodInfo } = req.body
 
+  const nameProd = name.toUpperCase()
   // check if product name exist
-  const prodExist = await Product.findOne({ name })
+  const prodExist = await Product.findOne({ name: nameProd })
 
   if (prodExist) {
     return res.status(400).json({
       msg: `Product ${name} already exist`
     })
   }
-  const product = new Product({ name, category, price, description })
+
+  const data = {
+    ...prodInfo,
+    name: nameProd,
+    user: req.user._id
+  }
+  const product = new Product(data)
 
   await product.save()
 
@@ -32,10 +52,12 @@ const createProduct = async (req, res = response) => {
 
 const updateProduct = async (req, res = response) => {
   const { id } = req.params
-  const { name, price, description, category, avaliable } = req.body
+  const { user, isActive, ...infoUp } = req.body
 
-  const data = { name, price, category, description, avaliable }
-  const product = await Product.findByIdAndUpdate(id, data, { new: true })
+  if (infoUp.name) {
+    infoUp.name = infoUp.name.toUpperCase()
+  }
+  const product = await Product.findByIdAndUpdate(id, infoUp, { new: true })
 
   res.json(product)
 }

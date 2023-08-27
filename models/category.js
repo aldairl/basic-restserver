@@ -1,26 +1,26 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose')
 
 const CategorySchema = Schema({
   name: {
     type: String,
-    require: true,
-    unique: true,
+    required: [true, 'name field is required'],
+    unique: true
   },
   isActive: {
     type: Boolean,
     default: true,
-    require: true,
+    required: [true, 'isActive field is required']
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: "User",
-    require: true,
-  },
-});
+    ref: 'User',
+    required: [true, 'user field is required']
+  }
+})
 
 CategorySchema.methods.toJSON = function () {
-  const { __v, isActive, ...data } = this.toObject();
-  return data;
-};
+  const { __v, isActive, ...data } = this.toObject()
+  return data
+}
 
-module.exports = model("Category", CategorySchema);
+module.exports = model('Category', CategorySchema)
