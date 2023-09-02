@@ -34,7 +34,8 @@ class Server {
     // file upload
     this.app.use(fileUpload({
       useTempFiles: true,
-      tempFileDir: '/tmp/'
+      tempFileDir: '/tmp/',
+      createParentPath: true
     }))
   }
 
