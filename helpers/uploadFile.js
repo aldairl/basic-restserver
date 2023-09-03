@@ -31,6 +31,14 @@ const uploadFileHelper = (files, folder = '', validExtensions = ['jpg', 'png', '
   })
 }
 
+const validCollections = (collection, listCollections = []) => {
+  if (!listCollections.includes(collection)) {
+    throw new Error(`valid collections are ${listCollections}`)
+  }
+  return true
+}
+
 module.exports = {
-  uploadFileHelper
+  uploadFileHelper,
+  validCollections
 }
